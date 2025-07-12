@@ -8,6 +8,7 @@ app.use(express.urlencoded({ extended: true }))
 app.use(express.static("public"))
 app.set('view engine', 'ejs');
 app.use(morgan('dev'));
+
 app.use((req, res, next) => {
   console.log('this is middleware');
   const a = 5;
@@ -15,15 +16,19 @@ app.use((req, res, next) => {
   console.log(`The sum of ${a} and ${b} is ${a + b}`);
   return next();
 });
+
 app.get('/', (req, res) => {
   res.render('index');
 });
+
 app.get('/result', (req, res) => {
   res.send('result is coming soon');
 })
+
 app.get('/register', (req, res) => {
   res.render('register')
 })
+
 app.post('/register', async (req, res) => {
   const { username, email, password } = req.body;
   const newUser = await model.create({
@@ -34,16 +39,24 @@ app.post('/register', async (req, res) => {
   console.log(newUser);
   res.send('User Registered')
 })
+
 app.get('/get-users', (req, res) => {
   model.find().then((users) => {
     res.send(users)
   })
   })
+
 app.get('/update-user',async(req,res)=>{
   await model.findOneAndUpdate({username:'purvanshu'},{email:'purvjindal@123'})
   res.send("user updated")
-})  
+}) 
 
+app.get('/delete-user',async(req,res)=>{
+  await model.findOneAndDelete({
+    username : 'delete me'
+  })
+  res.send('user deleted')
+})
 
 app.post('/get-data', (req, res) => {
   console.log(req.body);
